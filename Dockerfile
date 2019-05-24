@@ -20,8 +20,14 @@ WORKDIR "${ELASTALERT_HOME}"
 
 # Install Elastalert.
 # see: https://github.com/Yelp/elastalert/issues/1654
+# see: https://github.com/Yelp/elastalert/issues/2204
 RUN sed -i 's/jira>=1.0.10/jira>=1.0.10,<1.0.15/g' setup.py && \
-    python setup.py install && \
+    sed -i 's/elasticsearch>=7.0.0/elasticsearch==6.3.1/g' setup.py
+
+# fix error for auto installing urllib3>1.25
+RUN pip install urllib3==1.24.3
+
+RUN python setup.py install && \
     pip install -r requirements.txt
 
 FROM node:alpine
